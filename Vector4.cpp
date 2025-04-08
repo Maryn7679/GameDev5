@@ -1,5 +1,6 @@
 #include <xmmintrin.h>
 #include <pmmintrin.h>
+#include <cmath>
 
 struct vector4 
 {
@@ -155,5 +156,44 @@ public:
 		_mm_store_ps(prod, prod_simd);
 		float dot_product = prod[0] + prod[1] + prod[2] + prod[3];
 		return dot_product;
+	}
+
+	float magnitude() const
+	{
+		alignas(16) float v[4] = { this->x(), this->y(), this->z(), this->w() };
+		__m128 v_simd = _mm_load_ps(v);
+		__m128 prod_simd = _mm_mul_ps(v_simd, v_simd);
+		alignas(16) float prod[4];
+		_mm_store_ps(prod, prod_simd);
+		float dot_product = prod[0] + prod[1] + prod[2] + prod[3];
+		return dot_product;
+	}
+
+	float magnitude_square() const
+	{
+		alignas(16) float v[4] = { this->x(), this->y(), this->z(), this->w() };
+		__m128 v_simd = _mm_load_ps(v);
+		__m128 prod_simd = _mm_mul_ps(v_simd, v_simd);
+		alignas(16) float prod[4];
+		_mm_store_ps(prod, prod_simd);
+		float dot_product = prod[0] + prod[1] + prod[2] + prod[3];
+		return sqrt(dot_product);
+	}
+
+	vector4& normalize()
+	{
+		alignas(16) float v[4] = { this->x(), this->y(), this->z(), this->w() };
+		__m128 v_simd = _mm_load_ps(v);
+		__m128 prod_simd = _mm_mul_ps(v_simd, v_simd);
+		alignas(16) float prod[4];
+		_mm_store_ps(prod, prod_simd);
+		float dot_product = prod[0] + prod[1] + prod[2] + prod[3];
+		float scale = sqrt(dot_product);
+		__m128 v2_simd = _mm_set_ps(scale, scale, scale, 1);
+		__m128 res_simd = _mm_div_ps(v_simd, v2_simd);
+		alignas(16) float res[4];
+		_mm_store_ps(res, res_simd);
+		vector4 result = vector4(res[0], res[1], res[2], res[3]);
+		return result;
 	}
 };
