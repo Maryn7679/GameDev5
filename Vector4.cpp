@@ -1,6 +1,7 @@
 #include <xmmintrin.h>
 #include <pmmintrin.h>
 #include <cmath>
+#include <iostream>
 
 struct vector4 
 {
@@ -11,10 +12,10 @@ private:
 	float _w;
 
 public:
-	float x() const { _x; };
-	float y() const { _y; };
-	float z() const { _z; };
-	float w() const { _w; };
+	float x() const { return _x; };
+	float y() const { return _y; };
+	float z() const { return _z; };
+	float w() const { return _w; };
 
 	vector4(float x, float y, float z) 
 	{
@@ -132,7 +133,7 @@ public:
 		return result;
 	}
 
-	float& dot(const vector4& other)
+	float dot(const vector4& other)
 	{
 		alignas(16) float v1[4] = { this->x(), this->y(), this->z(), this->w() };
 		alignas(16) float v2[4] = { other.x(), other.y(), other.z(), other.w() };
@@ -145,7 +146,7 @@ public:
 		return dot_product;
 	}
 
-	float& dot(float x, float y, float z)
+	float dot(float x, float y, float z)
 	{
 		alignas(16) float v1[4] = { this->x(), this->y(), this->z(), this->w() };
 		alignas(16) float v2[4] = { x, y, z, 0 };
@@ -197,3 +198,10 @@ public:
 		return result;
 	}
 };
+
+int main() {
+	vector4 v1 = vector4(1, 2, 3);
+	vector4 v2 = vector4(1, 2, 3, 0);
+	vector4 sum = v1.add(v2);
+	std::cout << sum.x() << " " << sum.y() << " " << sum.z() << " " << sum.w();
+}
